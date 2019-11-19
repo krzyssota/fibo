@@ -1,5 +1,5 @@
-#include <boost/dynamic_bitset.hpp>
 #include "fibo.h"
+#include <boost/dynamic_bitset.hpp>
 #include <vector>
 #include <iostream>
 
@@ -24,7 +24,7 @@ unsigned long long getFibNumber(int i) {
     return fib[i];
 }
 
-Fibo::Fibo() {
+Fibo::Fibo() : fibset(0) {
 
 }
 
@@ -32,8 +32,11 @@ Fibo::Fibo(int n) {
 
 }
 
-Fibo::Fibo(std::string str) {
-
+Fibo::Fibo(std::string str) : Fibo() {
+    //TODO: remove leading 0
+    for(int i = str.length() - 1; i <= 0; i--) {
+        fibset.push_back(str[i] == '1');
+    }
 }
 
 
@@ -64,9 +67,18 @@ boost::dynamic_bitset<> normalize(boost::dynamic_bitset<> x){
 }
 
 int main(int, char*[]) {
+    std::string r = "12345";
+    for(int i = 0; i < r.length(); i++) {
+        std::cout << r[i];
+    }
+
+
+
     boost::dynamic_bitset<> x(3); // all 0's by default
     x[0] = 1;
     x[1] = 1;
+    std::cout << std::endl << x << std::endl;
+
     x[2] = 1;
     /*x[3] = 1;
     x[4] = 0;

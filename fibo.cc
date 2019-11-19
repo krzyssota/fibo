@@ -1,5 +1,6 @@
 #include "fibo.h"
 #include <boost/dynamic_bitset.hpp>
+#include <utility>
 #include <vector>
 #include <iostream>
 #include <cmath>
@@ -98,11 +99,21 @@ void Fibo::normalize() {
     }
 }
 
+void appendZeroes(Fibo& a, Fibo& b){ // TODO b const?
+    unsigned long aSize = a.getFibset().size();
+    unsigned long bSize = b.getFibset().size();
+    if(aSize < bSize){
+        for(size_t i = bSize-aSize; i > 0; --i){
+            a.getFibset().push_back(0);
+        }
+    }
+}
 
 int bitAt(size_t i, boost::dynamic_bitset<> const &c){
     if(i < c.size()) return c[i];
     else return 0;
 }
+
 void changeWindow(size_t i, std::vector<short>& window){
     if(window[i] == 0) {
         if (window[i - 1] == 2) {
@@ -128,6 +139,7 @@ void changeWindow(size_t i, std::vector<short>& window){
         }
     }
 }
+
 void correctLastWindow(std::vector<short>& window){
     if(window.at(0) == 3){ //  03 can be changed to 11
         window[1] = 1;
@@ -161,13 +173,15 @@ void correctLastWindow(std::vector<short>& window){
     }
 }
 
-Fibo operator + (Fibo a, Fibo b) {
+Fibo& Fibo::operator += (Fibo a) {
 
     boost::dynamic_bitset<> const &c1 = a.getFibset();
-    boost::dynamic_bitset<> const &c2 = b.getFibset();
+    boost::dynamic_bitset<> const &c2 = fibset;
 
     std::vector<short> vector;
-    for (size_t i = 0; i < std::max(c1.size(), c2.size()); ++i) {
+    unsigned long maxLength = std::max(c1.size(), c2.size());
+    vector.reserve(maxLength); // TODO potrzebne?
+    for (unsigned long i = 0; i < maxLength; ++i) {
         vector.push_back(bitAt(i, c1) + bitAt(i, c2));
     }
 
@@ -186,8 +200,12 @@ Fibo operator + (Fibo a, Fibo b) {
 
     Fibo result(s);
     result.normalize();
+    // TODO przez to nie segfault przy += i +
+    return result; // TODO problem jak zwracac referencje do obiektu a nie adres na stosie. Coś z rvalue lvalue
+}
 
-    return result;
+Fibo operator + (Fibo a, Fibo b) {
+    return a+=std::move(b); // TODO to podpowiedzialo clang-tidy nie wiem czy dobrze
 }
 
 void Fibo::cutZeros() {
@@ -240,9 +258,11 @@ int main(int, char* []) {
     Fibo b("100100");
     Fibo c("1010101");
 
-    Fibo a = b+c;
-    std::cout << a.getFibset() << std::endl;
+    // do naprawienia 203 linijka
+    //Fibo a = b+c;
+    //std::cout << a.getFibset() << std::endl;
 }
+
 //Fibo f1      - tworzy liczbę 0
 //
 //Fibo f1(str) - tworzy liczbę na podstawie napisu str, który jest zapisem tej

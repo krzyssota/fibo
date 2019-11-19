@@ -10,10 +10,9 @@ public:
     Fibo(std::string str);
     Fibo(unsigned long long n);
     void normalize(); // TODO może nie potrzebne (dodane dla potrzeb operator+)
-    boost::dynamic_bitset<> getFibset() {
-        return fibset;
-    }
-
+    boost::dynamic_bitset<> getFibset() { return fibset; }
+    Fibo& operator+=(Fibo a);
+    
 private:
     boost::dynamic_bitset<> fibset;
 

@@ -66,9 +66,13 @@ Fibo::Fibo(unsigned long long n) : fibset(findK(n) + 1) {
     }
 }
 
-void Fibo::normalize() {
-    size_t safeSpot = fibset.size();
-    for (size_t i = fibset.size() - 1; i >= 1;) {
+boost::dynamic_bitset<> normalize(boost::dynamic_bitset<>& x){
+    size_t i = x.size()-1;
+    while(x[i] == 0) --i;
+    size_t safeSpot = i+1;
+
+    for(i; i >= 1;){
+
         int j = i;
         while (j - 1 >= 0 && fibset[j] == 1 && fibset[j - 1] == 0) {
             j -= 2;
@@ -98,6 +102,87 @@ void Fibo::normalize() {
     }
 }
 
+int bitAt(size_t i, boost::dynamic_bitset<> const &c){
+    if(i < c.size()) return c[i];
+    else return 0;
+}
+void changeWindow(size_t i, std::vector<short>& window){
+    if(window[i] == 0) {
+        if (window[i - 1] == 2) {
+            if (window[i - 2] == 0) { //020x → 100(x++)
+                window[i] = 1;
+                window[i - 1] = 0;
+                window[i - 2] = 0;
+                window[i - 3]++;
+            } else if (window[i - 2] == 1) { //021x → 110x
+                window[i] = 1;
+                window[i - 1] = 1;
+                window[i - 2] = 0;
+            }
+        } else if (window[i - 1] == 3 && window[i - 2] == 0){ //030x → 110(x++)
+            window[i] = 1;
+            window[i - 1] = 1;
+            window[i - 2] = 0;
+            window[i - 3]++;
+        } else if (window[i - 1] == 1 && window[i - 2] == 0){ //012x → 101x
+            window[i] = 1;
+            window[i - 1] = 0;
+            window[i - 2] = 1;
+        }
+    }
+}
+void correctLastWindow(std::vector<short>& window){
+    if(window.at(0) == 3){ //  03 can be changed to 11
+        window[1] = 1;
+        window[0] = 1;
+    } else if(window.at(0) == 2){
+        if(window.at(1) == 0) { //  02 can be changed to 10
+            window[1] = 1;
+            window[0] = 0;
+        } else if(window.at(1) == 1){    // 012 can be changed to 101
+            window[2] = 1;
+            window[1] = 0;
+            window[0] = 1;
+        }
+    } else if(window.at(0) == 0){
+        if(window.at(1) == 3) { // 030 can be changed to 111
+            window[2] = 1;
+            window[1] = 1;
+            window[0] = 1;
+        } else if(window.at(1) == 2){  // 020 can be changed to 101
+            if(window.at(2) == 0) {
+                window[2] = 1;
+                window[1] = 0;
+                window[0] = 1;
+            } else if(window.at(2) == 1){ //0120 can be changed to 1010
+                window[3] = 1;
+                window[2] = 0;
+                window[1] = 1;
+                window[0] = 0;
+            }
+        }
+    }
+}
+
+boost::dynamic_bitset<> operator + (boost::dynamic_bitset<> const &c1, boost::dynamic_bitset<> const &c2) {
+
+    std::vector<short> vector;
+    for (size_t i = 0; i < std::max(c1.size(), c2.size()); ++i) {
+        vector.push_back(bitAt(i, c1) + bitAt(i, c2));
+    }
+
+    if(vector.at(vector.size() - 1) != 0) vector.push_back(0);
+    for(size_t j = vector.size() - 1; j >= 3; --j) {
+        changeWindow(j, vector);
+    }
+    correctLastWindow(vector);
+
+    boost::dynamic_bitset<> result(vector.size());
+    for(size_t i = 0; i < vector.size() ; ++i) result[i] = vector.at(i);
+    normalize(result);
+    return result;
+}
+
 void Fibo::cutZeros() {
     size_t first1 = 0;
     for(size_t i = fibset.size() - 1; i >= 0; i--) {
@@ -121,12 +206,10 @@ int main(int, char* []) {
         std::cout << r[i];
     }
 
-
     boost::dynamic_bitset<> x(3); // all 0's by default
     x[0] = 1;
     x[1] = 1;
     std::cout << std::endl << x << std::endl;
-
     x[2] = 1;
     /*x[3] = 1;
     x[4] = 0;
@@ -136,6 +219,34 @@ int main(int, char* []) {
     std::cout << x << "\n";
     //x = normalize(x);
     std::cout << x << "\n";
+
+    std::cout << std::endl;
+    std::cout << std::endl;
+
+    boost::dynamic_bitset<> b(7);
+    b[0] = 0;
+    b[1] = 0;
+    b[2] = 1;
+    b[3] = 0;
+    b[4] = 0;
+    b[5] = 1;
+    b[6] = 0;
+    boost::dynamic_bitset<> a(7);
+    a[0] = 1;
+    a[1] = 0;
+    a[2] = 1;
+    a[3] = 0;
+    a[4] = 1;
+    a[5] = 0;
+    a[6] = 1;
+
+    boost::dynamic_bitset<> c = a+b;
+    std::cout << c << std::endl;
+
+
+
+
+
 }
 //Fibo f1      - tworzy liczbę 0
 //

@@ -66,6 +66,24 @@ Fibo::Fibo(unsigned long long n) : fibset(findK(n) + 1) {
     }
 }
 
+Fibo::Fibo(const Fibo& that) : fibset(that.fibset) {
+
+}
+
+Fibo::Fibo(Fibo&& that) : fibset(std::move(that.fibset)) {
+
+}
+
+Fibo& Fibo::operator=(const Fibo& that) {
+    fibset = that.fibset;
+    return *this;
+}
+
+Fibo& Fibo::operator=(Fibo&& that) {
+    fibset = std::move(that.fibset);
+    return *this;
+}
+
 void Fibo::normalize() {
     size_t safeSpot = fibset.size();
     for (size_t i = fibset.size() - 1; i >= 1;) {

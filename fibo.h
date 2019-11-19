@@ -8,7 +8,7 @@ class Fibo {
 public:
     Fibo();
     Fibo(std::string str);
-        Fibo(int n);
+    Fibo(int n);
 
 private:
     boost::dynamic_bitset<> fibset;

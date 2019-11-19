@@ -23,13 +23,7 @@ unsigned long long getFibNumber(int i) {
     return fib[i];
 }
 
-int main() {
-    for(int i = 0; i < 100; i++) {
-        std::cout << "fib " << i << " = " << getFibNumber(i) << std::endl;
-    }
-}
-
-/*Fibo::Fibo() {
+Fibo::Fibo() {
 
 }
 
@@ -40,4 +34,3 @@ Fibo::Fibo(int n) {
 Fibo::Fibo(std::string str) {
 
 }
-*/

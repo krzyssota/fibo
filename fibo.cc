@@ -41,6 +41,8 @@ namespace {
 
         return fib[i];
     }
+
+
 }
 
 
@@ -66,41 +68,35 @@ Fibo::Fibo(unsigned long long n) : fibset(findK(n) + 1) {
     }
 }
 
-boost::dynamic_bitset<> normalize(boost::dynamic_bitset<>& x){
-    size_t i = x.size()-1;
-    while(x[i] == 0) --i;
+void Fibo::normalize() {
+
+    size_t i = fibset.size()-1;
+    while(fibset[i] == 0) --i;
     size_t safeSpot = i+1;
 
     for(i; i >= 1;){
-
         int j = i;
-        while (j - 1 >= 0 && fibset[j] == 1 && fibset[j - 1] == 0) {
-            j -= 2;
+        while(j-1 >= 0 && fibset[j] == 1 && fibset[j-1] == 0){
+            j-=2;
         }
-
-        if (fibset[j] == 1 && fibset[j - 1] == 1) {
+        if(fibset[j] == 1 && fibset[j-1] == 1) {
             fibset[j] = 0;
-            fibset[j - 1] = 0;
+            fibset[j-1] = 0;
 
-            for (size_t k = safeSpot - 1; k > j + 1;) {
+            for(size_t k = safeSpot-1; k > j+1;){
                 fibset[k] = 0;
                 k -= 2;
+
             }
-            if (safeSpot == fibset.size()) {
-                fibset.push_back(0);
-            }
+            if(safeSpot == fibset.size()) fibset.push_back(0);
             fibset[safeSpot] = 1;
         }
-
-        safeSpot = j - 1;
-        if (i >= 2) {
-            i = j - 2;
-        }
-        else {
-            i = 0;
-        }
+        safeSpot = j-1;
+        if(i>=2) i = j-2;
+        else i = 0;
     }
 }
+
 
 int bitAt(size_t i, boost::dynamic_bitset<> const &c){
     if(i < c.size()) return c[i];
@@ -179,7 +175,7 @@ boost::dynamic_bitset<> operator + (boost::dynamic_bitset<> const &c1, boost::dy
 
     boost::dynamic_bitset<> result(vector.size());
     for(size_t i = 0; i < vector.size() ; ++i) result[i] = vector.at(i);
-    normalize(result);
+    Fibo(result).normalize(); // TODO to będzie działać jak będzie konstruktor fib od innego fiba
     return result;
 }
 

@@ -8,10 +8,13 @@ class Fibo {
 public:
     Fibo();
     Fibo(std::string str);
-    Fibo(int n);
+    Fibo(unsigned long long n);
 
 private:
     boost::dynamic_bitset<> fibset;
+
+    void normalize();
+    void cutZeros();
 };
 
 #endif //FIBO_H

@@ -14,6 +14,7 @@ private:
     boost::dynamic_bitset<> fibset;
 
     void normalize();
+    void cutZeros();
 };
 
 #endif //FIBO_H

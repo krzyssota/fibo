@@ -50,7 +50,7 @@ Fibo::Fibo() : fibset(0) {
 
 Fibo::Fibo(std::string str) : Fibo() {
     //TODO: remove leading 0
-    for (int i = str.length() - 1; i <= 0; i--) {
+    for (int i = str.length() - 1; i >= 0; i--) {
         fibset.push_back(str[i] == '1');
     }
 
@@ -98,6 +98,17 @@ void Fibo::normalize() {
     }
 }
 
+void Fibo::cutZeros() {
+    size_t first1 = 0;
+    for(size_t i = fibset.size() - 1; i >= 0; i--) {
+        if(fibset[i]) {
+            first1 = i;
+            break;
+        }
+    }
+
+    fibset.resize(first1 + 1, false);
+}
 
 int main(int, char* []) {
     std::cout << findK(1) << std::endl;

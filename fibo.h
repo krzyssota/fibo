@@ -9,11 +9,15 @@ public:
     Fibo();
     Fibo(std::string str);
     Fibo(unsigned long long n);
+    void normalize(); // TODO może nie potrzebne (dodane dla potrzeb operator+)
+    boost::dynamic_bitset<> getFibset() {
+        return fibset;
+    }
 
 private:
     boost::dynamic_bitset<> fibset;
 
-    void normalize();
+    //void normalize(); // TODO może nie potrzebne (dodane dla potrzeb operator+)
     void cutZeros();
 };
 

@@ -3,6 +3,7 @@
 #include <vector>
 #include <iostream>
 #include <cmath>
+#include <sstream>
 
 namespace {
     double phi() {
@@ -79,7 +80,7 @@ void Fibo::normalize() {
         while(j-1 >= 0 && fibset[j] == 1 && fibset[j-1] == 0){
             j-=2;
         }
-        if(fibset[j] == 1 && fibset[j-1] == 1) {
+        if(j >= 1 && fibset[j] == 1 && fibset[j-1] == 1) {
             fibset[j] = 0;
             fibset[j-1] = 0;
 
@@ -91,8 +92,8 @@ void Fibo::normalize() {
             if(safeSpot == fibset.size()) fibset.push_back(0);
             fibset[safeSpot] = 1;
         }
-        safeSpot = j-1;
-        if(i>=2) i = j-2;
+        j >= 1 ? safeSpot = j-1 : safeSpot = 0;
+        if(j >= 2) i = j-2;
         else i = 0;
     }
 }
@@ -160,22 +161,32 @@ void correctLastWindow(std::vector<short>& window){
     }
 }
 
-boost::dynamic_bitset<> operator + (boost::dynamic_bitset<> const &c1, boost::dynamic_bitset<> const &c2) {
+Fibo operator + (Fibo a, Fibo b) {
+
+    boost::dynamic_bitset<> const &c1 = a.getFibset();
+    boost::dynamic_bitset<> const &c2 = b.getFibset();
 
     std::vector<short> vector;
     for (size_t i = 0; i < std::max(c1.size(), c2.size()); ++i) {
         vector.push_back(bitAt(i, c1) + bitAt(i, c2));
     }
 
-    if(vector.at(vector.size() - 1) != 0) vector.push_back(0);
-    for(size_t j = vector.size() - 1; j >= 3; --j) {
+    if (vector.at(vector.size() - 1) != 0) vector.push_back(0);
+    for (size_t j = vector.size() - 1; j >= 3; --j) {
         changeWindow(j, vector);
     }
     correctLastWindow(vector);
 
-    boost::dynamic_bitset<> result(vector.size());
-    for(size_t i = 0; i < vector.size() ; ++i) result[i] = vector.at(i);
-    Fibo(result).normalize(); // TODO to będzie działać jak będzie konstruktor fib od innego fiba
+    std::reverse(vector.begin(), vector.end()); // troche gówno
+    std::ostringstream oss;
+    if (!vector.empty()) {
+        std::copy(vector.begin(), vector.end(),std::ostream_iterator<int>(oss, ""));
+    }
+    std::string s = oss.str(); // dotąd
+
+    Fibo result(s);
+    result.normalize();
+
     return result;
 }
 
@@ -219,30 +230,18 @@ int main(int, char* []) {
     std::cout << std::endl;
     std::cout << std::endl;
 
-    boost::dynamic_bitset<> b(7);
-    b[0] = 0;
-    b[1] = 0;
-    b[2] = 1;
-    b[3] = 0;
-    b[4] = 0;
-    b[5] = 1;
-    b[6] = 0;
-    boost::dynamic_bitset<> a(7);
-    a[0] = 1;
-    a[1] = 0;
-    a[2] = 1;
-    a[3] = 0;
-    a[4] = 1;
-    a[5] = 0;
-    a[6] = 1;
-
-    boost::dynamic_bitset<> c = a+b;
-    std::cout << c << std::endl;
+    boost::dynamic_bitset<> y(2); // all 0's by default
+    y[0] = 0;
+    y[1] = 1;
+    std::cout << "toString " << y << std::endl;
+    std::cout << "y[0] " << y[0] << " y[1] " << y[1] << std::endl;
 
 
+    Fibo b("100100");
+    Fibo c("1010101");
 
-
-
+    Fibo a = b+c;
+    std::cout << a.getFibset() << std::endl;
 }
 //Fibo f1      - tworzy liczbę 0
 //

@@ -38,9 +38,12 @@ private:
     boost::dynamic_bitset<> fibset;
 
     static unsigned long long getFibNumber(size_t i);
+    static size_t findK(unsigned long long n);
 
     //void normalize(); // TODO może nie potrzebne (dodane dla potrzeb operator+)
     void cutZeros();
 };
 
 #endif //FIBO_H
+
+//01001011

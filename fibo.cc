@@ -11,17 +11,6 @@ namespace {
         return phi;
     }
 
-    size_t findK(unsigned long long n) {
-        if(n == 0) {
-            return 0;
-        }
-
-        double numerator = std::log(n * std::sqrt(5) + 0.5);
-        static double dominator = std::log(phi());
-
-        return std::floor(numerator/dominator) - 2;
-    }
-
     void completeFibNumbers(std::vector<unsigned long long>& fib, size_t to) {
         if (fib.empty()) {
             fib.push_back(1);
@@ -46,6 +35,8 @@ Fibo::Fibo(std::string str) : Fibo() {
     }
 
     normalize();
+
+    std::cout << fibset << std::endl;
 }
 
 /*Fibo::Fibo(unsigned long long n) : fibset(findK(n) + 1) {
@@ -131,6 +122,17 @@ unsigned long long Fibo::getFibNumber(size_t i) {
     }
 
     return fib[i];
+}
+
+size_t Fibo::findK(unsigned long long n) {
+    if(n == 0) {
+        return 0;
+    }
+
+    double numerator = std::log(n * std::sqrt(5) + 0.5);
+    static double dominator = std::log(phi());
+
+    return std::floor(numerator/dominator) - 2;
 }
 
 
@@ -239,12 +241,14 @@ void Fibo::cutZeros() {
 
 int main(int, char* []) {
     Fibo a(4);
-    Fibo b('r');
-    Fibo c(false);
-    Fibo d("10101");
+    //Fibo b('r');
+    //Fibo c(false);
+    Fibo d("01001011");
+
+    std::cout << d;
 
 
-
+/*
     std::cout << findK(1) << std::endl;
     std::cout << findK(2) << std::endl;
     std::cout << findK(0) << std::endl;
@@ -260,11 +264,11 @@ int main(int, char* []) {
     x[1] = 1;
     std::cout << std::endl << x << std::endl;
     x[2] = 1;
-    /*x[3] = 1;
+    x[3] = 1;
     x[4] = 0;
     x[5] = 1;
     x[6] = 0;
-    x[7] = 1;*/
+    x[7] = 1;
     std::cout << x << "\n";
     //x = normalize(x);
     std::cout << x << "\n";
@@ -283,7 +287,7 @@ int main(int, char* []) {
     Fibo c("1010101");
 
     Fibo a = b+c;
-    std::cout << a.getFibset() << std::endl;
+    std::cout << a.getFibset() << std::endl;*/
 }
 //Fibo f1      - tworzy liczbę 0
 //

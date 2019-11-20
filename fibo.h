@@ -3,6 +3,7 @@
 
 #include <string>
 #include <boost/dynamic_bitset.hpp>
+#include <functional>
 
 class Fibo {
 public:
@@ -24,7 +25,6 @@ public:
     Fibo(Fibo&& that) noexcept;
 
     void normalize(); // TODO może nie potrzebne (dodane dla potrzeb operator+)
-    boost::dynamic_bitset<> getFibset() const { return fibset; }
     Fibo& operator += (const Fibo& a);
     Fibo& operator &= (const Fibo& b);
     // operatory + firend, += nie friend
@@ -43,7 +43,11 @@ private:
 
     //void normalize(); // TODO może nie potrzebne (dodane dla potrzeb operator+)
     void cutZeros();
+
+    void performBitwiseOperation(const Fibo& fibo, const std::function<bool (bool, bool)>& function);
 };
+
+const Fibo operator+(Fibo a, const Fibo& b);
 
 #endif //FIBO_H
 

@@ -31,6 +31,9 @@ public:
     Fibo& operator=(const Fibo& that);
     Fibo& operator=(Fibo&& that) noexcept;
 
+    size_t length();
+    friend std::ostream& operator<<(std::ostream& stream, const Fibo& fibo);
+
 private:
     boost::dynamic_bitset<> fibset;
 

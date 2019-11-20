@@ -85,6 +85,15 @@ Fibo& Fibo::operator=(Fibo&& that) noexcept {
     return *this;
 }
 
+size_t Fibo::length() {
+    return fibset.size();
+}
+
+std::ostream& operator<<(std::ostream& stream, const Fibo& fibo) {
+    stream << fibo.fibset;
+    return stream;
+};
+
 void Fibo::normalize() {
 
     size_t i = fibset.size()-1;

@@ -28,7 +28,7 @@ namespace {
 
 Fibo::Fibo() : fibset(0) {}
 
-Fibo::Fibo(std::string str) : Fibo() {
+Fibo::Fibo(const std::string& str) : Fibo() {
     //TODO: remove leading 0
     for (int i = str.length() - 1; i >= 0; i--) {
         fibset.push_back(str[i] == '1');
@@ -38,25 +38,6 @@ Fibo::Fibo(std::string str) : Fibo() {
 
     std::cout << fibset << std::endl;
 }
-
-/*Fibo::Fibo(unsigned long long n) : fibset(findK(n) + 1) {
-    while(n != 0) {
-        size_t k = findK(n);
-        auto fibNum = getFibNumber(k);
-        fibset[k] = 1;
-        n -= fibNum;
-    }
-}*/
-
-/*template<typename T, typename = typename std::enable_if<std::is_integral<T>::value>::type>
-Fibo::Fibo(T n) : fibset(findK(n) + 1) {
-    while(n != 0) {
-        size_t k = findK(n);
-        auto fibNum = getFibNumber(k);
-        fibset[k] = 1;
-        n -= fibNum;
-    }
-}*/
 
 Fibo::Fibo(const Fibo& that) : fibset(that.fibset) {
 

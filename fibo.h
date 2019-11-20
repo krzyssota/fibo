@@ -7,7 +7,7 @@
 class Fibo {
 public:
     Fibo();
-    explicit Fibo(std::string str);
+    explicit Fibo(const std::string& str);
     template<typename T, typename = typename std::enable_if<
         std::is_integral<T>::value &&
         !std::is_same<T, bool>::value &&

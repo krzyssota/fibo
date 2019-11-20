@@ -186,9 +186,9 @@ void correctLastWindow(std::vector<short>& window){
     }
 }
 
-Fibo& Fibo::operator += (const Fibo& a) { // TODO zrobic w pamieci stalej jak starczy czasu
+Fibo& Fibo::operator += (const Fibo& b) { // TODO zrobic w pamieci stalej jak starczy czasu
 
-    boost::dynamic_bitset<> const &c1 = a.fibset;
+    boost::dynamic_bitset<> const &c1 = b.fibset;
     boost::dynamic_bitset<> const &c2 = this->fibset;
 
     std::vector<short> vector;
@@ -209,7 +209,7 @@ Fibo& Fibo::operator += (const Fibo& a) { // TODO zrobic w pamieci stalej jak st
     if (!vector.empty()) {
         std::copy(vector.begin(), vector.end(),std::ostream_iterator<int>(oss, ""));
     }
-    std::string s = oss.str(); // dotąd
+    std::string s = oss.str(); // dotąd ale działa
 
     Fibo result(s);
     result.normalize();
@@ -221,21 +221,40 @@ const Fibo operator+(Fibo a, const Fibo& b) {
     return a += b;
 }
 
-void Fibo::performBitwiseOperation(const Fibo& fibo, const std::function<bool (bool, bool)>& function){
-    const auto& fSet = fibo.fibset;
+void Fibo::doBitwiseOperation(const Fibo &b, const std::function<bool(bool, bool)> &f) {
+    const auto& fSet = b.fibset;
     unsigned long maxLength = std::max(fibset.size(), fSet.size());
     for (unsigned long i = 0; i < maxLength; ++i) {
-        fibset[function(bitAt(i, fibset), bitAt(i, fSet))];
+        fibset[i] = f(bitAt(i, fibset), bitAt(i, fSet));
     }
+    (*this).cutZeros();
 }
 
-Fibo& Fibo::operator &= (const Fibo& b) { // std::function bool<bool, bool>
-    //performBitwiseOperation(*this, b, std::bit_and<bool (bool, bool)>); // TODO move przydatny?
+Fibo& Fibo::operator &= (const Fibo& b) {
+    (*this).doBitwiseOperation(b, std::bit_and<>());
     return *this;
 }
 
 const Fibo& operator & (Fibo a, const Fibo& b) {
-    return a&=b; // TODO to podpowiedzialo clang-tidy nie wiem czy dobrze
+    return a&=b;
+}
+
+Fibo& Fibo::operator |= (const Fibo& b) {
+    (*this).doBitwiseOperation(b, std::bit_or<>());
+    return *this;
+}
+
+const Fibo& operator | (Fibo a, const Fibo& b) {
+    return a|=b;
+}
+
+Fibo& Fibo::operator ^= (const Fibo& b) {
+    (*this).doBitwiseOperation(b, std::bit_xor<>());
+    return *this;
+}
+
+const Fibo& operator ^ (Fibo a, const Fibo& b) {
+    return a^=b;
 }
 
 void Fibo::cutZeros() {
@@ -292,26 +311,55 @@ int main(int, char* []) {
     std::cout << "toString " << y << std::endl;
     std::cout << "y[0] " << y[0] << " y[1] " << y[1] << std::endl;
 
-
-     Fibo b("100100");
+    */
+    /*Fibo b("100100");
     Fibo c("1010101");
-    //b&=c;
-    //std::cout << b.getFibset() << std::endl;
 
-    Fibo a = b+c;
-    std::cout << a.getFibset() << std::endl;
+    std::cout << std::endl << "testowanie + i +=" << std::endl;
+    Fibo e = b+c;
+    std::cout << "e = b+c" << std::endl;
+    std::cout << e.fibset << std::endl;
     std::cout << "10100010 powinno byc" << std::endl;
-    std::cout << (b+=c).getFibset() << std::endl;
-    std::cout << "10100010 powinno byc" << std::endl;
-    std::cout << b.getFibset() << std::endl;
+
+    std::cout << "b" << std::endl;
+    std::cout << b.fibset << std::endl;
     std::cout << "100100 powinno byc" << std::endl;
-    std::cout << c.getFibset() << std::endl;
+
+    std::cout << "c" << std::endl;
+    std::cout << c.fibset << std::endl;
     std::cout << "1010101 powinno byc" << std::endl;
-    //Fibo d =
 
+    std::cout << "b+=c" << std::endl;
+    std::cout << (b+=c).fibset << std::endl;
+    std::cout << "10100010 powinno byc" << std::endl;
 
+    std::cout << "b" << std::endl;
+    std::cout << b.fibset << std::endl;
+    std::cout << "10100010 powinno byc" << std::endl;*/
 
-    std::cout << a.getFibset() << std::endl;*/
+    /*Fibo g("100100");
+    Fibo h("1010101");
+    std::cout << std::endl << "testowanie & and &=" << std::endl;
+    Fibo f = g&h;
+    std::cout << "f = g&h" << std::endl;
+    std::cout << f.fibset << std::endl;
+    std::cout << "100 powinno byc" << std::endl;
+
+    std::cout << "g" << std::endl;
+    std::cout << g.fibset << std::endl;
+    std::cout << "100100 powinno byc" << std::endl;
+
+    std::cout << "h" << std::endl;
+    std::cout << h.fibset << std::endl;
+    std::cout << "1010101 powinno byc" << std::endl;
+
+    std::cout << "g&=h" << std::endl;
+    std::cout << (g&=h).fibset << std::endl;
+    std::cout << "100 powinno byc" << std::endl;
+
+    std::cout << "g" << std::endl;
+    std::cout << g.fibset << std::endl;
+    std::cout << "100 powinno byc" << std::endl; */
 }
 
 //Fibo f1      - tworzy liczbę 0

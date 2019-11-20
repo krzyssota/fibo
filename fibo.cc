@@ -32,18 +32,6 @@ namespace {
             fib.push_back(fib[i] + fib[j]);
         }
     }
-
-    unsigned long long getFibNumber(size_t i) {
-        static std::vector<unsigned long long> fib;
-
-        if (i >= fib.size()) {
-            completeFibNumbers(fib, i);
-        }
-
-        return fib[i];
-    }
-
-
 }
 
 
@@ -60,20 +48,30 @@ Fibo::Fibo(std::string str) : Fibo() {
     normalize();
 }
 
-Fibo::Fibo(unsigned long long n) : fibset(findK(n) + 1) {
+/*Fibo::Fibo(unsigned long long n) : fibset(findK(n) + 1) {
     while(n != 0) {
         size_t k = findK(n);
         auto fibNum = getFibNumber(k);
         fibset[k] = 1;
         n -= fibNum;
     }
-}
+}*/
+
+/*template<typename T, typename = typename std::enable_if<std::is_integral<T>::value>::type>
+Fibo::Fibo(T n) : fibset(findK(n) + 1) {
+    while(n != 0) {
+        size_t k = findK(n);
+        auto fibNum = getFibNumber(k);
+        fibset[k] = 1;
+        n -= fibNum;
+    }
+}*/
 
 Fibo::Fibo(const Fibo& that) : fibset(that.fibset) {
 
 }
 
-Fibo::Fibo(Fibo&& that) : fibset(std::move(that.fibset)) {
+Fibo::Fibo(Fibo&& that) noexcept : fibset(std::move(that.fibset)) {
 
 }
 
@@ -82,7 +80,7 @@ Fibo& Fibo::operator=(const Fibo& that) {
     return *this;
 }
 
-Fibo& Fibo::operator=(Fibo&& that) {
+Fibo& Fibo::operator=(Fibo&& that) noexcept {
     fibset = std::move(that.fibset);
     return *this;
 }
@@ -114,6 +112,16 @@ void Fibo::normalize() {
         if(j >= 2) i = j-2;
         else i = 0;
     }
+}
+
+unsigned long long Fibo::getFibNumber(size_t i) {
+    static std::vector<unsigned long long> fib;
+
+    if (i >= fib.size()) {
+        completeFibNumbers(fib, i);
+    }
+
+    return fib[i];
 }
 
 
@@ -221,6 +229,13 @@ void Fibo::cutZeros() {
 }
 
 int main(int, char* []) {
+    Fibo a(4);
+    Fibo b('r');
+    Fibo c(false);
+    Fibo d("10101");
+
+
+
     std::cout << findK(1) << std::endl;
     std::cout << findK(2) << std::endl;
     std::cout << findK(0) << std::endl;

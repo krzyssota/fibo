@@ -88,10 +88,17 @@ void Fibo::normalize() {
             }
             if(safeSpot == fibset.size()) fibset.push_back(0);
             fibset[safeSpot] = 1;
+            j >= 1 ? safeSpot = j - 1 : safeSpot = 0;
+            if (j >= 2) i = j - 2;
+            else i = 0;
+        } else if (j >= 1 && fibset[j] == 0 && fibset[j-1] == 1){
+            safeSpot = j;
+            i = j-1;
+        } else {
+            j >= 1 ? safeSpot = j - 1 : safeSpot = 0;
+            if (j >= 2) i = j - 2;
+            else i = 0;
         }
-        j >= 1 ? safeSpot = j-1 : safeSpot = 0;
-        if(j >= 2) i = j-2;
-        else i = 0;
     }
 }
 

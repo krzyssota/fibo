@@ -24,9 +24,10 @@ public:
     Fibo(Fibo&& that) noexcept;
 
     void normalize(); // TODO może nie potrzebne (dodane dla potrzeb operator+)
-    boost::dynamic_bitset<> getFibset() {
-        return fibset;
-    }
+    boost::dynamic_bitset<> getFibset() const { return fibset; }
+    Fibo& operator += (const Fibo& a);
+    Fibo& operator &= (const Fibo& b);
+    // operatory + firend, += nie friend
 
     Fibo& operator=(const Fibo& that);
     Fibo& operator=(Fibo&& that) noexcept;

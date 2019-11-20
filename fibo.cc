@@ -1,9 +1,11 @@
 #include "fibo.h"
 #include <boost/dynamic_bitset.hpp>
+#include <utility>
 #include <vector>
 #include <iostream>
 #include <cmath>
 #include <sstream>
+#include <functional>
 
 namespace {
     double phi() {
@@ -24,9 +26,7 @@ namespace {
 }
 
 
-Fibo::Fibo() : fibset(0) {
-
-}
+Fibo::Fibo() : fibset(0) {}
 
 Fibo::Fibo(std::string str) : Fibo() {
     //TODO: remove leading 0
@@ -114,6 +114,16 @@ void Fibo::normalize() {
     }
 }
 
+void appendZeroes(Fibo& a, Fibo& b){ // TODO b const?
+    unsigned long aSize = a.getFibset().size();
+    unsigned long bSize = b.getFibset().size();
+    if(aSize < bSize){
+        for(size_t i = bSize-aSize; i > 0; --i){
+            a.getFibset().push_back(0);
+        }
+    }
+}
+
 unsigned long long Fibo::getFibNumber(size_t i) {
     static std::vector<unsigned long long> fib;
 
@@ -198,13 +208,15 @@ void correctLastWindow(std::vector<short>& window){
     }
 }
 
-Fibo operator + (Fibo a, Fibo b) {
+Fibo& Fibo::operator += (const Fibo& a) { // TODO zrobic w pamieci stalej jak starczy czasu
 
-    boost::dynamic_bitset<> const &c1 = a.getFibset();
-    boost::dynamic_bitset<> const &c2 = b.getFibset();
+    boost::dynamic_bitset<> const &c1 = a.fibset;
+    boost::dynamic_bitset<> const &c2 = this->fibset;
 
     std::vector<short> vector;
-    for (size_t i = 0; i < std::max(c1.size(), c2.size()); ++i) {
+    unsigned long maxLength = std::max(c1.size(), c2.size());
+    vector.reserve(maxLength); // TODO potrzebne?
+    for (unsigned long i = 0; i < maxLength; ++i) {
         vector.push_back(bitAt(i, c1) + bitAt(i, c2));
     }
 
@@ -223,8 +235,31 @@ Fibo operator + (Fibo a, Fibo b) {
 
     Fibo result(s);
     result.normalize();
+    this->fibset = result.fibset; // TODO efektywne? może jakiś move?
+    return *this;
+}
 
-    return result;
+const Fibo operator + (Fibo a, const Fibo& b) {
+    return a+=(b); // TODO to podpowiedzialo clang-tidy nie wiem czy dobrze
+}
+
+void performBitwiseOperation(Fibo& a,const Fibo& b,const std::function<bool (bool, bool)>& function){
+
+    boost::dynamic_bitset<> const &c1 = a.getFibset();
+    boost::dynamic_bitset<> const &c2 = b.getFibset();
+    unsigned long maxLength = std::max(c1.size(), c2.size());
+    for (unsigned long i = 0; i < maxLength; ++i) {
+        a.getFibset()[function(bitAt(i, c1), bitAt(i, c2))];
+    }
+}
+
+Fibo& Fibo::operator &= (const Fibo& b) { // std::function bool<bool, bool>
+    //performBitwiseOperation(*this, b, std::bit_and<bool (bool, bool)>); // TODO move przydatny?
+    return *this;
+}
+
+const Fibo& operator & (Fibo a, const Fibo& b) {
+    return a&=b; // TODO to podpowiedzialo clang-tidy nie wiem czy dobrze
 }
 
 void Fibo::cutZeros() {
@@ -235,7 +270,6 @@ void Fibo::cutZeros() {
             break;
         }
     }
-
     fibset.resize(first1 + 1, false);
 }
 
@@ -283,12 +317,27 @@ int main(int, char* []) {
     std::cout << "y[0] " << y[0] << " y[1] " << y[1] << std::endl;
 
 
-    Fibo b("100100");
+     Fibo b("100100");
     Fibo c("1010101");
+    //b&=c;
+    //std::cout << b.getFibset() << std::endl;
 
     Fibo a = b+c;
+    std::cout << a.getFibset() << std::endl;
+    std::cout << "10100010 powinno byc" << std::endl;
+    std::cout << (b+=c).getFibset() << std::endl;
+    std::cout << "10100010 powinno byc" << std::endl;
+    std::cout << b.getFibset() << std::endl;
+    std::cout << "100100 powinno byc" << std::endl;
+    std::cout << c.getFibset() << std::endl;
+    std::cout << "1010101 powinno byc" << std::endl;
+    //Fibo d =
+
+
+
     std::cout << a.getFibset() << std::endl;*/
 }
+
 //Fibo f1      - tworzy liczbę 0
 //
 //Fibo f1(str) - tworzy liczbę na podstawie napisu str, który jest zapisem tej

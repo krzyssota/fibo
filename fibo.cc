@@ -5,6 +5,7 @@
 #include <iostream>
 #include <cmath>
 #include <sstream>
+#include <functional>
 
 namespace {
     double phi() {
@@ -48,9 +49,7 @@ namespace {
 }
 
 
-Fibo::Fibo() : fibset(0) {
-
-}
+Fibo::Fibo() : fibset(0) {}
 
 Fibo::Fibo(std::string str) : Fibo() {
     //TODO: remove leading 0
@@ -113,7 +112,6 @@ int bitAt(size_t i, boost::dynamic_bitset<> const &c){
     if(i < c.size()) return c[i];
     else return 0;
 }
-
 void changeWindow(size_t i, std::vector<short>& window){
     if(window[i] == 0) {
         if (window[i - 1] == 2) {
@@ -139,7 +137,6 @@ void changeWindow(size_t i, std::vector<short>& window){
         }
     }
 }
-
 void correctLastWindow(std::vector<short>& window){
     if(window.at(0) == 3){ //  03 can be changed to 11
         window[1] = 1;
@@ -173,10 +170,10 @@ void correctLastWindow(std::vector<short>& window){
     }
 }
 
-Fibo& Fibo::operator += (Fibo a) {
+Fibo& Fibo::operator += (const Fibo& a) { // TODO zrobic w pamieci stalej jak starczy czasu
 
-    boost::dynamic_bitset<> const &c1 = a.getFibset();
-    boost::dynamic_bitset<> const &c2 = fibset;
+    boost::dynamic_bitset<> const &c1 = a.fibset;
+    boost::dynamic_bitset<> const &c2 = this->fibset;
 
     std::vector<short> vector;
     unsigned long maxLength = std::max(c1.size(), c2.size());
@@ -200,12 +197,31 @@ Fibo& Fibo::operator += (Fibo a) {
 
     Fibo result(s);
     result.normalize();
-    // TODO przez to nie segfault przy += i +
-    return result; // TODO problem jak zwracac referencje do obiektu a nie adres na stosie. Coś z rvalue lvalue
+    this->fibset = result.fibset; // TODO efektywne? może jakiś move?
+    return *this;
 }
 
-Fibo operator + (Fibo a, Fibo b) {
-    return a+=std::move(b); // TODO to podpowiedzialo clang-tidy nie wiem czy dobrze
+const Fibo operator + (Fibo a, const Fibo& b) {
+    return a+=(b); // TODO to podpowiedzialo clang-tidy nie wiem czy dobrze
+}
+
+void performBitwiseOperation(Fibo& a,const Fibo& b,const std::function<bool (bool, bool)>& function){
+
+    boost::dynamic_bitset<> const &c1 = a.getFibset();
+    boost::dynamic_bitset<> const &c2 = b.getFibset();
+    unsigned long maxLength = std::max(c1.size(), c2.size());
+    for (unsigned long i = 0; i < maxLength; ++i) {
+        a.getFibset()[function(bitAt(i, c1), bitAt(i, c2))];
+    }
+}
+
+Fibo& Fibo::operator &= (const Fibo& b) { // std::function bool<bool, bool>
+    //performBitwiseOperation(*this, b, std::bit_and<bool (bool, bool)>); // TODO move przydatny?
+    return *this;
+}
+
+const Fibo& operator & (Fibo a, const Fibo& b) {
+    return a&=b; // TODO to podpowiedzialo clang-tidy nie wiem czy dobrze
 }
 
 void Fibo::cutZeros() {
@@ -216,7 +232,6 @@ void Fibo::cutZeros() {
             break;
         }
     }
-
     fibset.resize(first1 + 1, false);
 }
 
@@ -255,12 +270,24 @@ int main(int, char* []) {
     std::cout << "y[0] " << y[0] << " y[1] " << y[1] << std::endl;
 
 
-    Fibo b("100100");
+     Fibo b("100100");
     Fibo c("1010101");
+    //b&=c;
+    //std::cout << b.getFibset() << std::endl;
 
-    // do naprawienia 203 linijka
-    //Fibo a = b+c;
-    //std::cout << a.getFibset() << std::endl;
+    Fibo a = b+c;
+    std::cout << a.getFibset() << std::endl;
+    std::cout << "10100010 powinno byc" << std::endl;
+    std::cout << (b+=c).getFibset() << std::endl;
+    std::cout << "10100010 powinno byc" << std::endl;
+    std::cout << b.getFibset() << std::endl;
+    std::cout << "100100 powinno byc" << std::endl;
+    std::cout << c.getFibset() << std::endl;
+    std::cout << "1010101 powinno byc" << std::endl;
+    //Fibo d =
+
+
+
 }
 
 //Fibo f1      - tworzy liczbę 0

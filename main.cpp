@@ -4,6 +4,23 @@
 #include <iostream>
 
 int main() {
+
+    int x = 238336;
+    int y = 7;
+    int z = x+y;
+    Fibo fx(x);
+    Fibo fy(y);
+    Fibo suma = fx+fy;
+    bool fxfy = (z == suma);
+    std::cout << "x+y == fx+fy: " << fxfy << std::endl;
+
+
+    bool aa = Fibo(x) < Fibo(y);
+    bool bb = x < y;
+    std::cout << "fx < fy " << aa << std::endl;
+    std::cout << "x < y " << bb << std::endl;
+
+
     Fibo f;
     Fibo t1("1001");
     Fibo t2("1100");

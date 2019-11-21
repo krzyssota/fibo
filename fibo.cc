@@ -95,14 +95,13 @@ namespace {
 Fibo::Fibo() : fibset(1) {}
 
 Fibo::Fibo(const std::string& str) : fibset() {
-    //TODO: remove leading 0
+    assert(str[str.length() - 1] != '0'); //checking if string has leading 0
     for (int i = str.length() - 1; i >= 0; i--) {
         assert(str[i] == '1' || str[i] == '0');
         fibset.push_back(str[i] == '1');
     }
 
     normalize();
-    cutZeros();
 }
 
 Fibo::Fibo(const Fibo& that) : fibset(that.fibset) {
@@ -124,7 +123,6 @@ Fibo& Fibo::operator=(Fibo&& that) noexcept {
 }
 
 Fibo& Fibo::operator+=(const Fibo& b) {
-
     unsigned long maxLength = std::max(fibset.size(), b.fibset.size());
     Fibo result = Zero();
     result.fibset.resize(maxLength + 1, 0);

@@ -7,6 +7,7 @@ int main() {
     Fibo f;
     Fibo t1("1001");
     Fibo t2("1100");
+    Fibo ttt(nullptr);
     std::cout << t1 << std::endl << t2 << std::endl;
     Fibo t3 = t1 & t2;
     std::cout << t3 << std::endl;

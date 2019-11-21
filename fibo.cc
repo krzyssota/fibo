@@ -25,18 +25,17 @@ namespace {
     }
 }
 
-
 Fibo::Fibo() : fibset(0) {}
 
 Fibo::Fibo(const std::string& str) : Fibo() {
     //TODO: remove leading 0
     for (int i = str.length() - 1; i >= 0; i--) {
+        assert(str[i] == '1' || str[i] == '0');
         fibset.push_back(str[i] == '1');
     }
 
     normalize();
-
-    std::cout << fibset << std::endl;
+    cutZeros();
 }
 
 Fibo::Fibo(const Fibo& that) : fibset(that.fibset) {
@@ -128,6 +127,7 @@ int bitAt(size_t i, boost::dynamic_bitset<> const &c){
     if(i < c.size()) return c[i];
     else return 0;
 }
+
 void changeWindow(size_t i, std::vector<short>& window){
     if(window[i] == 0) {
         if (window[i - 1] == 2) {
@@ -187,7 +187,6 @@ void correctLastWindow(std::vector<short>& window){
 }
 
 Fibo& Fibo::operator += (const Fibo& b) { // TODO zrobic w pamieci stalej jak starczy czasu
-
     boost::dynamic_bitset<> const &c1 = b.fibset;
     boost::dynamic_bitset<> const &c2 = this->fibset;
 
@@ -227,11 +226,11 @@ void Fibo::doBitwiseOperation(const Fibo &b, const std::function<bool(bool, bool
     for (unsigned long i = 0; i < maxLength; ++i) {
         fibset[i] = f(bitAt(i, fibset), bitAt(i, fSet));
     }
-    (*this).cutZeros();
+    cutZeros();
 }
 
 Fibo& Fibo::operator &= (const Fibo& b) {
-    (*this).doBitwiseOperation(b, std::bit_and<>());
+    doBitwiseOperation(b, std::bit_and<>());
     return *this;
 }
 
@@ -240,7 +239,7 @@ const Fibo& operator & (Fibo a, const Fibo& b) {
 }
 
 Fibo& Fibo::operator |= (const Fibo& b) {
-    (*this).doBitwiseOperation(b, std::bit_or<>());
+    doBitwiseOperation(b, std::bit_or<>());
     return *this;
 }
 
@@ -249,7 +248,7 @@ const Fibo& operator | (Fibo a, const Fibo& b) {
 }
 
 Fibo& Fibo::operator ^= (const Fibo& b) {
-    (*this).doBitwiseOperation(b, std::bit_xor<>());
+    doBitwiseOperation(b, std::bit_xor<>());
     return *this;
 }
 
@@ -274,7 +273,13 @@ int main(int, char* []) {
     //Fibo c(false);
     Fibo d("01001011");
 
-    std::cout << d;
+    Fibo ee;
+    //ee = 4;w
+    Fibo x = 4 + a;
+    std::cout << x << std::endl;
+    //d = 2 + a;
+
+    //std::cout << d;
 
 
 /*

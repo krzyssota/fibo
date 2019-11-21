@@ -13,7 +13,9 @@ public:
         std::is_integral<T>::value &&
         !std::is_same<T, bool>::value &&
         !std::is_same<T, char>::value>::type>
-    explicit Fibo(T n) : fibset(findK(n) + 1) {
+    Fibo(T n) : fibset(findK(n) + 1) {
+        assert(n >= 0);
+
         while(n != 0) {
             size_t k = findK(n);
             auto fibNum = getFibNumber(k);
@@ -31,7 +33,6 @@ public:
     Fibo& operator ^= (const Fibo& b);
     Fibo& operator <<= (const Fibo& b);
 
-        // operatory + firend, += nie friend
 
     Fibo& operator=(const Fibo& that);
     Fibo& operator=(Fibo&& that) noexcept;

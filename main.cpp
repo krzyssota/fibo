@@ -7,13 +7,23 @@ int main() {
     Fibo f;
     Fibo t1("1001");
     Fibo t2("1100");
-    Fibo ttt(nullptr);
     std::cout << t1 << std::endl << t2 << std::endl;
     Fibo t3 = t1 & t2;
     std::cout << t3 << std::endl;
 
     Fibo tt = Zero();
     std::cout << tt << std::endl;
+
+    Fibo a(42);
+    Fibo b(83);
+    Fibo c = a + 8; //50
+    Fibo d = 26 + b; //109
+    assert(c == 50);
+    assert(d < 110);
+    assert(d >= 109);
+    assert(b + 7 == 90);
+
+
 
     assert(f == Zero());
     assert(Fibo(f) == Zero());

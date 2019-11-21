@@ -95,7 +95,7 @@ namespace {
 Fibo::Fibo() : fibset(1) {}
 
 Fibo::Fibo(const std::string& str) : fibset() {
-    assert(str[str.length() - 1] != '0'); //checking if string has leading 0
+    assert(str[0] != '0'); //checking if string has leading 0
     for (int i = str.length() - 1; i >= 0; i--) {
         assert(str[i] == '1' || str[i] == '0');
         fibset.push_back(str[i] == '1');
@@ -169,6 +169,7 @@ Fibo& Fibo::operator^=(const Fibo& b) {
 Fibo& Fibo::operator<<=(unsigned long long rhs) {
     fibset.resize(fibset.size() + rhs, false);
     fibset <<= rhs;
+    return *this;
 }
 
 bool operator<(const Fibo& lhs, const Fibo& rhs) {

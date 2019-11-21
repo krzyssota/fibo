@@ -1,144 +1,67 @@
-#include "fibo.h"
-
-#include <cassert>
 #include <iostream>
 
-int main() {
+#include <cassert>
+#include "fibo.h"
+
+using namespace std;
+// tu wklej swoja klase
+
+const int n = 10;
+
+int tab[n];
+string str[n];
+
+int main()
+{
+    /*assert((Fibo(4) + Fibo(2)) == 6);
+    assert((Fibo(73) + Fibo(3)) == 76);
+    assert((Fibo(26) + Fibo(2)) == 28);
+    assert((Fibo(52) + Fibo(274)) == 326);
+    assert((Fibo(273) + Fibo(23)) == 296);
+    assert((Fibo(93) + Fibo(5166)) == 5259);
+    assert((Fibo(4) + Fibo(2)) == 6);
+    assert((Fibo(4) + Fibo(2)) == 6);
+
 
     int x = 238336;
     int y = 7;
-    int z = x+y;
-    Fibo fx(x);
-    Fibo fy(y);
-    Fibo suma = fx+fy;
-    bool fxfy = (z == suma);
-    std::cout << "x+y == fx+fy: " << fxfy << std::endl;
+    Fibo a(x);
+    Fibo b(y);
 
+    Fibo r1 = a + b;
+    bool aa = r1 == (x+y);*/
 
-    bool aa = Fibo(x) < Fibo(y);
-    bool bb = x < y;
-    std::cout << "fx < fy " << aa << std::endl;
-    std::cout << "x < y " << bb << std::endl;
+    //cout << a << endl << b << endl << r1 << endl;
 
+    /*for (int i=0; i<n; i++) {
+        cin >> tab[i];
+    }
 
-    Fibo f;
-    Fibo t1("1001");
-    Fibo t2("1100");
-    std::cout << t1 << std::endl << t2 << std::endl;
-    Fibo t3 = t1 & t2;
-    std::cout << t3 << std::endl;
+    for (int i=0; i<n; i++) {
+        for (int j=0; j<=i; j++) {
+            cout << "tab i = " << tab[i] << endl;
+            cout << "tab j = " << tab[j] << endl << endl;
+            assert((Fibo(tab[i]) + Fibo(tab[j])) == Fibo(tab[i]+tab[j]));
+            assert((Fibo(tab[i]) < Fibo(tab[j])) == (tab[i] < tab[j]));
+        }
+    }
 
-    Fibo tt = Zero();
-    std::cout << tt << std::endl;
+    for (int i=0; i<n; i++) {
+        cout << Fibo(tab[i]).length() << " " << Fibo(tab[i]) << "\n";
+    }*/
 
-    Fibo a(42);
-    Fibo b(83);
-    Fibo c = a + 8; //50
-    Fibo d = 26 + b; //109
-    assert(c == 50);
-    assert(d < 110);
-    assert(d >= 109);
-    assert(b + 7 == 90);
+    // Wydajnosciowe
 
+    for (int i=0; i<n; i++) {
+        cin >> str[i];
+    }
 
-
-    assert(f == Zero());
-    assert(Fibo(f) == Zero());
-    assert(Zero() < One());
-    assert(Fibo("11") == Fibo("100"));
-    assert((Fibo("1001") + Fibo("10")) == Fibo("1011"));
-    assert((Fibo("1001") & Fibo("1100")) == Zero()); // 1100 == 10000
-    assert((Fibo("1100") | Fibo("11")) == Fibo("10100")); // 1100 == 10000, 11 == 100
-    assert((Fibo("1001") ^ Fibo("1010")) == Fibo("11"));
-    assert((Fibo("101") << 3) == Fibo("101000"));
-
-    f = One();
-    f <<= 3;
-    assert(f == Fibo("1000"));
-
-    f = One();
-    assert(f + Fibo("1") == Fibo("10"));
-    assert(f == One());
-
-    Fibo f1("101");
-    Fibo f2 = Fibo("101");
-    assert(f1 == f2);
-
-    assert(Fibo("11").length() == 3); // 11 == 100
-
-    std::cout << Fibo("11") << std::endl; // prints 100
+    for (int i=0; i<n; i++) {
+        for (int j=0; j<=i; j++) {
+            cout << (Fibo(str[i]) + Fibo(str[j])) << "\n";
+            cout << (Fibo(str[i]) | Fibo(str[j])) << "\n";
+            cout << (Fibo(str[i]) ^ Fibo(str[j])) << "\n";
+            cout << (Fibo(str[i]) & Fibo(str[j])) << "\n";
+        }
+    }
 }
-
-/*#include "fibo.h"
-
-#include <cassert>
-#include <iostream>
-
-
-Fibo testFib(long long n) {
-    Fibo a(n);
-    std::cout << n << " = " << a << std::endl;
-    return  a;
-}
-
-int main() {
-    Fibo t1("1001");
-    Fibo t2("1100");
-    std::cout << t1 << std::endl << t2 << std::endl;
-    Fibo t3 = t1 & t2;
-
-    return 0;
-
-
-
-    Fibo ff = testFib(5);
-    testFib(16);
-    Fibo a = testFib(26);
-    Fibo b = testFib(9);
-    testFib(13);
-    //do tego momentu ok
-    std::cout << std::endl;
-
-    a <<= 2;
-    std::cout << a << std::endl;
-
-    Fibo c = b << 1;
-    std::cout << "b = " << b << std::endl;
-    std::cout << "c = " << c << std::endl;
-
-    //Fibo d = ff | 4;
-    //std::cout << "d = " << d << std::endl;
-    std::cout << std::endl << std::endl;
-
-    Fibo f;
-
-    assert(f == Zero());
-    assert(Fibo(f) == Zero());
-    assert(Zero() < One());
-    assert(Fibo("11") == Fibo("100"));
-    //assert((Fibo("1001") + Fibo("10")) == Fibo("1011"));
-
-    return 0;
-    assert((Fibo("1001") & Fibo("1100")) == Zero()); // 1100 == 10000
-    assert((Fibo("1100") | Fibo("11")) == Fibo("10100")); // 1100 == 10000, 11 == 100
-    assert((Fibo("1001") ^ Fibo("1010")) == Fibo("11"));
-    assert((Fibo("101") << 3) == Fibo("101000"));
-
-    f = One();
-    f <<= 3;
-    assert(f == Fibo("1000"));
-
-    f = One();
-    //assert(f + Fibo("1") == Fibo("10"));
-    assert(f == One());
-
-    Fibo f1("101");
-    Fibo f2 = Fibo("101");
-    assert(f1 == f2);
-
-    assert(Fibo("11").length() == 3); // 11 == 100
-
-    std::cout << Fibo("11") << std::endl; // prints 100
-
-    return 0;
-}*/

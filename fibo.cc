@@ -177,7 +177,12 @@ Fibo& Fibo::operator<<=(unsigned long long rhs) {
 }
 
 bool operator<(const Fibo& lhs, const Fibo& rhs) {
-    return lhs.fibset < rhs.fibset;
+    if(lhs.length() == rhs.length()) {
+        return lhs.fibset < rhs.fibset;
+    }
+    else {
+        return lhs.length() < rhs.length();
+    }
 }
 
 bool operator==(const Fibo& lhs, const Fibo& rhs) {

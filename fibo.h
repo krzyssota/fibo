@@ -47,7 +47,7 @@ private:
     boost::dynamic_bitset<> fibset;
     bool bitAt(size_t i) const;
     void normalize();
-    void cutZeros();
+    void trimLeadingZeros();
     void doBitwiseOperation(const Fibo &b, const std::function<bool(bool, bool)> &f);
     void insertWindowIntoResult(unsigned long j, std::vector<short> window);
 
@@ -55,8 +55,7 @@ private:
     static size_t findK(unsigned long long n);
 };
 
-#endif //FIBO_H
-
 const Fibo& Zero();
 const Fibo& One();
-//01001011
+
+#endif //FIBO_H

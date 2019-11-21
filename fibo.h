@@ -4,8 +4,10 @@
 #include <string>
 #include <boost/dynamic_bitset.hpp>
 #include <functional>
+#include <boost/operators.hpp>
 
-class Fibo {
+class Fibo : boost::addable<Fibo>, boost::totally_ordered<Fibo>,
+    boost::bitwise<Fibo>, boost::left_shiftable<Fibo> {
 public:
     Fibo();
     explicit Fibo(const std::string& str);
@@ -13,7 +15,9 @@ public:
         std::is_integral<T>::value &&
         !std::is_same<T, bool>::value &&
         !std::is_same<T, char>::value>::type>
-    explicit Fibo(T n) : fibset(findK(n) + 1) {
+    Fibo(T n) : fibset(findK(n) + 1) {
+        assert(n >= 0);
+
         while(n != 0) {
             size_t k = findK(n);
             auto fibNum = getFibNumber(k);
@@ -24,36 +28,34 @@ public:
     Fibo(const Fibo& that);
     Fibo(Fibo&& that) noexcept;
 
-    void normalize();
+    Fibo& operator=(const Fibo& that);
+    Fibo& operator=(Fibo&& that) noexcept;
+
     Fibo& operator += (const Fibo& b);
     Fibo& operator &= (const Fibo& b);
     Fibo& operator |= (const Fibo& b);
     Fibo& operator ^= (const Fibo& b);
-    Fibo& operator <<= (const Fibo& b);
+    Fibo& operator <<= (size_t rhs);
+    friend bool operator<(const Fibo& lhs, const Fibo& rhs);
+    friend bool operator==(const Fibo& lhs, const Fibo& rhs);
 
-        // operatory + firend, += nie friend
+    size_t length() const;
 
-    Fibo& operator=(const Fibo& that);
-    Fibo& operator=(Fibo&& that) noexcept;
-
-    size_t length();
     friend std::ostream& operator<<(std::ostream& stream, const Fibo& fibo);
 
-    boost::dynamic_bitset<> fibset; // TODO usunac po testach
-
 private:
-    // boost::dynamic_bitset<> fibset; TODO odkomentowac
+    boost::dynamic_bitset<> fibset;
+    bool bitAt(size_t i) const;
+    void normalize();
+    void cutZeros();
+    void doBitwiseOperation(const Fibo &b, const std::function<bool(bool, bool)> &f);
 
     static unsigned long long getFibNumber(size_t i);
     static size_t findK(unsigned long long n);
-
-    void cutZeros();
-
-    void doBitwiseOperation(const Fibo &b, const std::function<bool(bool, bool)> &f);
 };
-
-const Fibo operator+(Fibo a, const Fibo& b);
 
 #endif //FIBO_H
 
+const Fibo& Zero();
+const Fibo& One();
 //01001011

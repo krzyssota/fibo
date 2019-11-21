@@ -4,8 +4,10 @@
 #include <string>
 #include <boost/dynamic_bitset.hpp>
 #include <functional>
+#include <boost/operators.hpp>
 
-class Fibo {
+class Fibo : boost::addable<Fibo>, boost::totally_ordered<Fibo>,
+    boost::bitwise<Fibo>, boost::left_shiftable<Fibo> {
 public:
     Fibo();
     explicit Fibo(const std::string& str);
@@ -26,34 +28,31 @@ public:
     Fibo(const Fibo& that);
     Fibo(Fibo&& that) noexcept;
 
-    void normalize();
+    Fibo& operator=(const Fibo& that);
+    Fibo& operator=(Fibo&& that) noexcept;
+
     Fibo& operator += (const Fibo& b);
     Fibo& operator &= (const Fibo& b);
     Fibo& operator |= (const Fibo& b);
     Fibo& operator ^= (const Fibo& b);
     Fibo& operator <<= (const Fibo& b);
+    friend bool operator<(const Fibo& lhs, const Fibo& rhs);
+    friend bool operator==(const Fibo& lhs, const Fibo& rhs);
 
+    size_t length() const;
 
-    Fibo& operator=(const Fibo& that);
-    Fibo& operator=(Fibo&& that) noexcept;
-
-    size_t length();
     friend std::ostream& operator<<(std::ostream& stream, const Fibo& fibo);
 
-    boost::dynamic_bitset<> fibset; // TODO usunac po testach
-
 private:
-    // boost::dynamic_bitset<> fibset; TODO odkomentowac
+    boost::dynamic_bitset<> fibset;
+    bool bitAt(size_t i) const;
+    void normalize();
+    void cutZeros();
+    void doBitwiseOperation(const Fibo &b, const std::function<bool(bool, bool)> &f);
 
     static unsigned long long getFibNumber(size_t i);
     static size_t findK(unsigned long long n);
-
-    void cutZeros();
-
-    void doBitwiseOperation(const Fibo &b, const std::function<bool(bool, bool)> &f);
 };
-
-const Fibo operator+(Fibo a, const Fibo& b);
 
 #endif //FIBO_H
 

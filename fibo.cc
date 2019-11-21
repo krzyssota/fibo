@@ -88,6 +88,10 @@ namespace {
                     window[3] = 0;
                 }
             }
+        } else if(window[1] == 0 && window[2] == 2 && window[3] == 1){
+            window[1] = 1;
+            window[2] = 1;
+            window[3] = 0;
         }
     }
 }
@@ -130,11 +134,10 @@ Fibo& Fibo::operator+=(const Fibo& b) {
         maxLength = 3;
     }
     std::vector<short> window(4);
-    window[1] = 0;
-    window[2] = this->bitAt(maxLength) + b.bitAt(maxLength);
-    window[3] = this->bitAt(maxLength - 1) + b.bitAt(maxLength - 1);
-
-    for (size_t j = maxLength + 1; j >= 3; --j) {
+    window[1] = this->bitAt(maxLength) + b.bitAt(maxLength);
+    window[2] = this->bitAt(maxLength - 1) + b.bitAt(maxLength - 1);
+    window[3] = this->bitAt(maxLength - 2) + b.bitAt(maxLength - 2);
+    for (size_t j = maxLength; j >= 3; --j) {
         for (int i = 0; i <= 2; ++i) window[i] = window[i + 1];
         window[3] = this->bitAt(j - 3) + b.bitAt(j - 3);
 
@@ -142,10 +145,11 @@ Fibo& Fibo::operator+=(const Fibo& b) {
         result.insertWindowIntoResult(j, window);
     }
     correctLastWindow(window);
-    result.insertWindowIntoResult(3, window);
+    result.insertLastWindowIntoResult(window);
 
     result.normalize();
     result.trimLeadingZeros();
+
     this->fibset = result.fibset;
     return *this;
 
@@ -235,7 +239,6 @@ void Fibo::normalize() {
             else i = 0;
         }
         else {
-            assert(j <= 0);
             i = 0;
         }
     }
@@ -263,9 +266,11 @@ void Fibo::doBitwiseOperation(const Fibo& b, const std::function<bool(bool, bool
 }
 
 void Fibo::insertWindowIntoResult(unsigned long j, std::vector<short> window) {
-    for (int i = 0; i < 4; ++i) {
-        fibset[j - i] = window[i];
-    }
+    fibset[j] = window[0];
+}
+
+void Fibo::insertLastWindowIntoResult(std::vector<short> window) {
+    for(int i = 0; i <= 3; ++i) fibset[3 - i] = window[i];
 }
 
 unsigned long long Fibo::getFibNumber(size_t i) {

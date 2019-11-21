@@ -170,7 +170,7 @@ Fibo& Fibo::operator^=(const Fibo& b) {
     return *this;
 }
 
-Fibo& Fibo::operator<<=(unsigned long long rhs) {
+Fibo& Fibo::operator<<=(size_t rhs) {
     fibset.resize(fibset.size() + rhs, false);
     fibset <<= rhs;
     return *this;
@@ -211,13 +211,13 @@ void Fibo::normalize() {
     size_t safeSpot = i + 1; // last place seen where 1 can be put without breaching normality condition
 
     while (i >= 1) {
-        int j = i;
-        while (j - 1 >= 0 && fibset[j] == 1 && fibset[j - 1] == 0) { // iterate through "10" where there are no safe places
-            j -= 2;
+        size_t j = i;
+        while (j >= 1 && fibset[j] == 1 && fibset[j - 1] == 0) { // iterate through "10" where there are no safe places
+            (j >= 2) ? j -= 2 : j = 0;
         }
         if (j >= 1 && fibset[j] == 0 && fibset[j - 1] == 1) {
             safeSpot = j;
-            i = j - 1;
+            i = j-1;
         }
         else if (j >= 1 && fibset[j] == 1 && fibset[j - 1] == 1) {
             fibset[j] = 0;
@@ -229,14 +229,12 @@ void Fibo::normalize() {
 
             if (safeSpot == fibset.size()) fibset.push_back(0);
             fibset[safeSpot] = 1;
-            if (j >= 1) safeSpot = j - 1;
-            if (j >= 2) i = j - 2;
-            else i = 0;
+            safeSpot = j - 1;
+            (j >= 2) ? i = j - 2 : i = 0;
         }
         else if (j >= 1 && fibset[j] == 0 && fibset[j - 1] == 0) {
-            if (j >= 1) safeSpot = j - 1;
-            if (j >= 2) i = j - 2;
-            else i = 0;
+            safeSpot = j - 1;
+            (j >= 2) ? i = j - 2 : i = 0;
         }
         else {
             i = 0;
@@ -270,7 +268,7 @@ void Fibo::insertWindowIntoResult(unsigned long j, std::vector<short> window) {
 }
 
 void Fibo::insertLastWindowIntoResult(std::vector<short> window) {
-    for(int i = 0; i <= 3; ++i) fibset[3 - i] = window[i];
+    for(size_t i = 0; i <= 3; ++i) fibset[3 - i] = window[i];
 }
 
 unsigned long long Fibo::getFibNumber(size_t i) {

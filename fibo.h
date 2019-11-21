@@ -49,6 +49,7 @@ private:
     void normalize();
     void cutZeros();
     void doBitwiseOperation(const Fibo &b, const std::function<bool(bool, bool)> &f);
+    void insertWindowIntoResult(unsigned long j, std::vector<short> window);
 
     static unsigned long long getFibNumber(size_t i);
     static size_t findK(unsigned long long n);

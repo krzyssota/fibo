@@ -15,7 +15,6 @@
 int main() {
     Fibo a(9);
     std::cout << a << std::endl;
-    return 0;
 
 
     Fibo f;
@@ -28,11 +27,11 @@ int main() {
     assert((Fibo("1001") & Fibo("1100")) == Zero()); // 1100 == 10000
     assert((Fibo("1100") | Fibo("11")) == Fibo("10100")); // 1100 == 10000, 11 == 100
     assert((Fibo("1001") ^ Fibo("1010")) == Fibo("11"));
-    //assert((Fibo("101") << 3) == Fibo("101000"));
+    assert((Fibo("101") << 3) == Fibo("101000"));
 
     f = One();
-    /*f <<= 3;
-    assert(f == Fibo("1000"));*/
+    f <<= 3;
+    assert(f == Fibo("1000"));
 
     f = One();
     assert(f + Fibo("1") == Fibo("10"));

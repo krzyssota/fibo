@@ -165,11 +165,7 @@ Fibo& Fibo::operator^=(const Fibo& b) {
     return *this;
 }
 
-Fibo& Fibo::operator<<=(size_t rhs) {
-    if (rhs < 0) {
-        throw 20; //TODO: poprawić co ma rzucac
-    }
-
+Fibo& Fibo::operator<<=(unsigned long long rhs) {
     fibset.resize(fibset.size() + rhs, false);
     fibset <<= rhs;
 }

@@ -7,7 +7,7 @@
 #include <boost/operators.hpp>
 
 class Fibo : boost::addable<Fibo>, boost::totally_ordered<Fibo>,
-    boost::bitwise<Fibo>, boost::left_shiftable<Fibo> {
+    boost::bitwise<Fibo>, boost::left_shiftable<Fibo, unsigned long long> {
 public:
     Fibo();
     explicit Fibo(const std::string& str);
@@ -35,7 +35,7 @@ public:
     Fibo& operator &= (const Fibo& b);
     Fibo& operator |= (const Fibo& b);
     Fibo& operator ^= (const Fibo& b);
-    Fibo& operator <<= (size_t rhs);
+    Fibo& operator <<= (unsigned long long rhs);
     friend bool operator<(const Fibo& lhs, const Fibo& rhs);
     friend bool operator==(const Fibo& lhs, const Fibo& rhs);
 

@@ -54,34 +54,34 @@ namespace {
     }
 
     void correctLastWindow(std::vector<short>& window) {
-        if (window[3] == 3) { //  03 can be changed to 11
+        if (window[3] == 3) { //  xy03 → xy11
             window[2] = 1;
             window[3] = 1;
         }
         else if (window[3] == 2) {
-            if (window[2] == 0) { //  xx02 can be changed to xx10
+            if (window[2] == 0) { //  xy02 → to xy10
                 window[2] = 1;
                 window[3] = 0;
             }
-            else if (window[2] == 1) {    // x012 can be changed to x101
+            else if (window[2] == 1) {    // x012 → x101
                 window[1] = 1;
                 window[2] = 0;
                 window[3] = 1;
             }
         }
         else if (window[3] == 0) {
-            if (window[2] == 3) { // x030 can be changed to x111
+            if (window[2] == 3) { // x030 → x111
                 window[1] = 1;
                 window[2] = 1;
                 window[3] = 1;
             }
-            else if (window[2] == 2) {  // x020 can be changed to x101
+            else if (window[2] == 2) {  // x020 → x101
                 if (window[1] == 0) {
                     window[1] = 1;
                     window[2] = 0;
                     window[3] = 1;
                 }
-                else if (window[0] == 0 && window[1] == 1) { // 0120 can be changed to 1010
+                else if (window[0] == 0 && window[1] == 1) { // 0120 → 1010
                     window[0] = 1;
                     window[1] = 0;
                     window[2] = 1;
@@ -100,7 +100,6 @@ Fibo::Fibo(const std::string& str) : fibset() {
         assert(str[i] == '1' || str[i] == '0');
         fibset.push_back(str[i] == '1');
     }
-
     normalize();
 }
 
@@ -144,8 +143,9 @@ Fibo& Fibo::operator+=(const Fibo& b) {
     }
     correctLastWindow(window);
     result.insertWindowIntoResult(3, window);
+
     result.normalize();
-    result.cutZeros();
+    result.trimLeadingZeros();
     this->fibset = result.fibset;
     return *this;
 
@@ -196,14 +196,14 @@ bool Fibo::bitAt(size_t i) const {
 
 void Fibo::normalize() {
     size_t i = fibset.size() - 1;
-    while (fibset[i] == 0 && i > 0) {
+    while (fibset[i] == 0 && i > 0) { // iterate through leading zeros
         --i;
     }
-    size_t safeSpot = i + 1;
+    size_t safeSpot = i + 1; // last place seen where 1 can be put without breaching normality condition
 
     while (i >= 1) {
         int j = i;
-        while (j - 1 >= 0 && fibset[j] == 1 && fibset[j - 1] == 0) {
+        while (j - 1 >= 0 && fibset[j] == 1 && fibset[j - 1] == 0) { // iterate through "10" where there are no safe places
             j -= 2;
         }
         if (j >= 1 && fibset[j] == 0 && fibset[j - 1] == 1) {
@@ -211,23 +211,21 @@ void Fibo::normalize() {
             i = j - 1;
         }
         else if (j >= 1 && fibset[j] == 1 && fibset[j - 1] == 1) {
-
             fibset[j] = 0;
             fibset[j - 1] = 0;
-
-            for (size_t k = safeSpot - 1; k > j + 1;) {
+            for (size_t k = safeSpot - 1; k > j + 1;) { // zero all ones from passed "10" series
                 fibset[k] = 0;
                 k -= 2;
             }
 
             if (safeSpot == fibset.size()) fibset.push_back(0);
             fibset[safeSpot] = 1;
-            if (j >= 1) safeSpot = j - 1; // else for ends;
+            if (j >= 1) safeSpot = j - 1;
             if (j >= 2) i = j - 2;
             else i = 0;
         }
         else if (j >= 1 && fibset[j] == 0 && fibset[j - 1] == 0) {
-            if (j >= 1) safeSpot = j - 1; // else for ends;
+            if (j >= 1) safeSpot = j - 1;
             if (j >= 2) i = j - 2;
             else i = 0;
         }
@@ -238,7 +236,7 @@ void Fibo::normalize() {
     }
 }
 
-void Fibo::cutZeros() {
+void Fibo::trimLeadingZeros() {
     size_t first1 = 0;
     for (long long i = fibset.size() - 1; i >= 0; i--) {
         if (fibset[i]) {
@@ -255,7 +253,7 @@ void Fibo::doBitwiseOperation(const Fibo& b, const std::function<bool(bool, bool
     for (unsigned long i = 0; i < maxLength; ++i) {
         fibset[i] = f(this->bitAt(i), b.bitAt(i));
     }
-    cutZeros();
+    trimLeadingZeros();
     normalize();
 }
 
@@ -281,9 +279,9 @@ size_t Fibo::findK(unsigned long long n) {
     }
 
     double numerator = std::log(n * std::sqrt(5) + 0.5);
-    static double dominator = std::log(phi());
+    static double denominator = std::log(phi());
 
-    return std::floor(numerator / dominator) - 2;
+    return std::floor(numerator / denominator) - 2;
 }
 
 const Fibo& Zero() {

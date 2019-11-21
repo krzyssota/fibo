@@ -232,7 +232,7 @@ void Fibo::normalize() {
 
 void Fibo::cutZeros() {
     size_t first1 = 0;
-    for (size_t i = fibset.size() - 1; i >= 0; i--) {
+    for (long long i = fibset.size() - 1; i >= 0; i--) {
         if (fibset[i]) {
             first1 = i;
             break;
@@ -243,6 +243,7 @@ void Fibo::cutZeros() {
 
 void Fibo::doBitwiseOperation(const Fibo& b, const std::function<bool(bool, bool)>& f) {
     unsigned long maxLength = std::max(this->length(), b.length());
+    fibset.resize(maxLength, false);
     for (unsigned long i = 0; i < maxLength; ++i) {
         fibset[i] = f(this->bitAt(i), b.bitAt(i));
     }

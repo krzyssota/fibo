@@ -146,8 +146,10 @@ Fibo& Fibo::operator+=(const Fibo& b) {
     }
     correctLastWindow(window);
     result.insertLastWindowIntoResult(window);
+
     result.normalize();
     result.trimLeadingZeros();
+
     this->fibset = result.fibset;
     return *this;
 
